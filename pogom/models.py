@@ -319,6 +319,7 @@ def parse_map(map_dict, iteration_num, step, step_location):
     }
 
     bulk_upsert(ScannedLocation, scanned)
+    return pokemons, pokestops, gyms
 
 
 def bulk_upsert(cls, data):

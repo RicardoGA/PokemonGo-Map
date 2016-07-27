@@ -25,11 +25,13 @@ from pgoapi.utilities import f2i, get_cellid
 
 from . import config
 from .models import parse_map
+from alarm.notifications import Notifications
 
 log = logging.getLogger(__name__)
 
 TIMESTAMP = '\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000'
 api = PGoApi()
+alarms = Notifications()
 
 # Constants for Hex Grid
 # Gap between vertical and horzonal "rows"
@@ -151,7 +153,8 @@ def search_thread(q):
             if response_dict:
                 with lock:
                     try:
-                        parse_map(response_dict, i, step, step_location)
+                        pokemons, pokestops, gyms = parse_map(response_dict, i, step, step_location)
+                        alarms.notify_pkmns(pokemons)
                         log.debug("{}: itteration {} step {} complete".format(threadname, i, step))
                     except KeyError:
                         log.error('Search thread failed. Response dictionary key error')
